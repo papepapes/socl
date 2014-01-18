@@ -23,7 +23,7 @@ store his nodes, to represent his edges and to import existant data to build its
 
 ![Graph Abstract classes](./assets/uml_abstract.png)
 
-The **AbstractGraph** uses a **AbstractNodeStore**: that store can be implemented in many ways. One can be an array, another can use a file, or a database, or a remote backend like [Kinvey]() or [Parse]().
+The **AbstractGraph** uses a **AbstractNodeStore**: that store can be implemented in many ways. One can be an array, another can use a file, or a database, or a remote backend like [Kinvey](http://www.kinvey.com) or [Parse](https://parse.com).
 
 The **AbstractGraph** uses a **AbstractGraphLinkStrategy**: that represents a way of storing relationship infos inside the graph. Most used strategies are Adjacency Matrix and Adjancency List.
 
@@ -32,7 +32,7 @@ The **AbstractGraph** use a **AbstractGraphDataImporter**: that provides a real 
 from various sources origins and formats: _JSON_, _XML_, _SQL_, _NoSQL_, _BAAS_, _Web services_, ...
 
 
-The whole code contains that library and a PHP [Silex]() REST server to serve requests again the graph. Unit and functions tests are also included.
+The whole code contains that library and a PHP [Silex](http://silex.sensiolabs.org) REST server to serve requests again the graph. Unit and functions tests are also included.
 
 COMPONENTS
 ------------
@@ -54,12 +54,12 @@ For example a **SQLITEGraphDataImporter** and **XMLGraphDataImporter** are provi
 
 APPLICATION
 -------------
-The application is a PHP [Silex]() REST server which servers the social graph API.
+The application is a PHP [Silex](http://silex.sensiolabs.org) REST server which servers the social graph API.
 The Silex application uses three service providers: 
 
 + A **FriendshipGraphServiceProvider** which represents an instance of the **FriendshipGraph** graph data structure 
 + A **GraphDataSerializerServiceProvider** used to serialize response in json format to the REST client
-+ A **SocialGraphAPIControllerProvider** which encapsulate all request handling logic inside a [Silex]() Controller
++ A **SocialGraphAPIControllerProvider** which encapsulate all request handling logic inside a [Silex](http://silex.sensiolabs.org) Controller
 
 
 HOW TO SETUP
@@ -83,8 +83,8 @@ Finally access the application on your browser at specified port: _9090_ in our 
 HOW TO RUN TESTS
 ---------------
 
-In order to run the tests [PHPUnit]() will be needed for the Unit tests and [CodeCeption]() for the functional/API tests.
-This repo provide copies of both [PHPUnit]() and [CodeCeption]() phar files inside the bin directory. 
+In order to run the tests [PHPUnit](http://phpunit.de) will be needed for the Unit tests and [CodeCeption](http://codeception.com) for the functional/API tests.
+This repo provide copies of both [PHPUnit](http://phpunit.de) and [CodeCeption](http://codeception.com) phar files inside the bin directory. 
 Run unit tests like this:
 
 ```
@@ -103,7 +103,7 @@ FINAL NOTES
 The design goal is to implement our home made data structure to tackle social graph manipulation.
 But in real application and for performance/time reasons, thinks can be a lot easier.
 
-For the backend a real graph database storage can(MUST) be used like [Neo4J]() or [ArangoDB]() and all or most of 
+For the backend a real graph database storage can(MUST) be used like [Neo4J](http://www.neo4j.org) or [ArangoDB](http://arangodb.org) and all or most of 
 the application logic can be directly implemented inside the backend. Since thoses backends provide a REST endpoint,
 client can be of any type or even another server.
 
