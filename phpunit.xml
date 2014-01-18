@@ -1,0 +1,11 @@
+<phpunit bootstrap="vendor/autoload.php">
+	<testsuites>
+		<testsuite name="friendship graph tests">
+			<file>tests/unit/PersonNodeTest.php</file>
+			<file>tests/unit/ArrayNodeStoreTest.php</file>
+			<file>tests/unit/MatrixGraphLinkStrategyTest.php</file>
+			<file>tests/unit/JSONGraphDataImporterTest.php</file>
+			<file>tests/unit/FriendshipGraphTest.php</file>
+		</testsuite>
+	</testsuites>	
+</phpunit>
