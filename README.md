@@ -69,6 +69,7 @@ In order to run the application, PHP is needed for the REST server and Git to fe
 
 
 $ git clone https://github.com/papepapes/socl socl
+
 $ cd socl
 
 
