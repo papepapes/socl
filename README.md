@@ -67,10 +67,11 @@ HOW TO SETUP
 
 In order to run the application, PHP is needed for the REST server and Git to fetch the code. Then use this command from your command line:
 
-
+```
 $ git clone https://github.com/papepapes/socl socl
 
 $ cd socl
+```
 
 
 Then start a local simple PHP server like this: (if you do not use a XAMP stack)
