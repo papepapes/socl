@@ -8,6 +8,7 @@ making/breaking relationships, and allows to:
 + Get a person's friends
 + GET a person's friends of friends
 + GET a person's suggested friends : 
+
 > People in the group who know two or more direct friends of the chosen person, but are not directly connected to her.
 
 
