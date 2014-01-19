@@ -68,7 +68,7 @@ HOW TO SETUP
 In order to run the application, PHP is needed for the REST server and Git to fetch the code. Then use this command from your command line:
 
 ```
-$ git clone https://github.com/papepapes/socl socl
+$ git clone https://github.com/papepapes/socl.git socl
 $ cd socl
 $ cd web
 ```
@@ -125,6 +125,7 @@ TODO
 
  + Write an AngularJS client to play with the REST API
  + Review algos
+ + Add TRAVIS CI
 
 FINAL NOTES 
 -----------
