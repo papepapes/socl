@@ -69,7 +69,6 @@ In order to run the application, PHP is needed for the REST server and Git to fe
 
 ```
 $ git clone https://github.com/papepapes/socl socl
-
 $ cd socl
 ```
 
@@ -82,8 +81,28 @@ php -S 127.0.0.1:9090
 
 Finally access the application on your browser at specified port: _9090_ in our case.
 
+REST API ENDPOINTS
+------------------
+
+The following url are used to play with the URL:
+
++ GET {base_url}/api/v1/people : GET the list of persons
++ GET {base_url}/api/v1/people/{id} : GET a singular person 
++ GET {base_url}/api/v1/people/{id}/friends : GET a singular person's friends 
++ GET {base_url}/api/v1/people/{id}/friends/friends : GET a singular person's friends of friends
++ GET {base_url}/api/v1/people/{id}/friends/suggested : GET a singular person's suggested friends
++ POST {base_url}/api/v1/people : REGISTER A person inside the social graph
++ POST {base_url}/api/v1/people/{pid}/friends/{fid} : Make two persons friends. Build a friendship link.
++ PUT {base_url}/api/v1/people/{id} : Update a person's record.
++ DELETE {base_url}/api/v1/people/{id} : Delete a person's record.
++ DELETE {base_url}/api/v1/people/{pid}/friends/{fid} : Remove friendship between two persons.
+
+{base_url} is your server url and {id}/{pid}/{fid} are integers values for concerned persons.
+
+
+
 HOW TO RUN TESTS
----------------
+----------------
 
 In order to run the tests [PHPUnit](http://phpunit.de) will be needed for the Unit tests and [CodeCeption](http://codeception.com) for the functional/API tests.
 This repo provide copies of both [PHPUnit](http://phpunit.de) and [CodeCeption](http://codeception.com) phar files inside the bin directory. 
@@ -98,6 +117,13 @@ Run functional/REST tests like this:
 ```
 php bin/cedecept.phar 
 ```
+
+
+TODO
+-------
+
+ + Write an AngularJS client to play with the REST API
+ + 
 
 FINAL NOTES 
 -----------
