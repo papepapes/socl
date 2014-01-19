@@ -2,8 +2,8 @@
 
 namespace PAPE\SOCL;
 
-use PACO\SOCL\AbstractGraphDataImporter;
-use PACO\SOCL\PersonNode;
+use PAPE\SOCL\AbstractGraphDataImporter;
+use PAPE\SOCL\PersonNode;
 
 /**
 *	@author GUEYE MAMADOU <papepapes@gmail.com>
@@ -25,13 +25,13 @@ class SQLITEGraphDataImporter extends AbstractGraphDataImporter{
 	*/
 	public function __construct($dbFile){
 		if(!file_exists($dbFile)){
-			throw new Exception('Failure to load an unexistant db file.');
+			throw new \Exception('Failure to load an unexistant db file.');
 		}
 		try{
 		
-			$this->con = new PDO('sqlite:'.$dbFile);
-			$this->con->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-			$this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->con = new \PDO('sqlite:'.$dbFile);
+			$this->con->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+			$this->con->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		}catch(Exception $e){
 			throw $e;
 		}

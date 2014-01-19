@@ -1,8 +1,8 @@
 <?php 
 namespace PAPE\SOCL;
 
-use PACO\SOCL\AbstractGraphDataImporter;
-use PACO\SOCL\PersonNode;
+use PAPE\SOCL\AbstractGraphDataImporter;
+use PAPE\SOCL\PersonNode;
 
 /**
 *	@author GUEYE MAMADOU <papepapes@gmail.com>
@@ -23,7 +23,7 @@ class XMLGraphDataImporter extends AbstractGraphDataImporter{
 	*/
 	public function __construct($xmlFile){
 		if(!file_exists($xmlFile)){
-			throw new Exception('Failure to load an unexistant db file.');
+			throw new \Exception('Failure to load an unexistant db file.');
 		}
 		$this->xmlFile = $xmlFile;
 	}

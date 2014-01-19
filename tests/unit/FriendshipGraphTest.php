@@ -2,6 +2,8 @@
 
 use PAPE\SOCL\FriendshipGraph;
 use PAPE\SOCL\PersonNode;
+use PAPE\SOCL\ArrayNodeStore;
+use PAPE\SOCL\MatrixGraphLinkStrategy;
 
 /**
 *	@author GUEYE MAMADOU <papepapes@gmail.com>
@@ -126,6 +128,8 @@ class FriendshipGraphTest extends PHPUnit_Framework_TestCase{
 		$p1Friends = $friendshipGraph->getFriendsOf($person1);
 		$this->assertEquals(count($p1Friends), 3);
 		$this->assertContains($person2, $p1Friends);
+		$this->assertContains($person3, $p1Friends);
+		$this->assertContains($person4, $p1Friends);
 
 
 	}
@@ -145,32 +149,42 @@ class FriendshipGraphTest extends PHPUnit_Framework_TestCase{
 		$friendshipGraph = new FriendshipGraph($this->nodeStoreMock, $this->linkStrategyMock);
 		$p1FriendsOfriends = $friendshipGraph->getFriendsOfriendsOf($person1);
 		$this->assertEquals(count($p1FriendsOfriends), 2);
+		$this->assertContains($person3, $p1FriendsOfriends);
 		$this->assertContains($person4, $p1FriendsOfriends);
 	}
 
 	public function testGetSuggestedFriendsOf(){
-		// $person1 = new PersonNode(1, 'Mamadou', 'paco', 'Male', 31);
-		// $person2 = new PersonNode(2, 'Felice', 'felice', 'Female', 28);
-		// $person3 = new PersonNode(3, 'Jean', 'jean', 'Male', 34);
-		// $person4 = new PersonNode(4, 'Michael', 'syde', 'Male', 30);
-		// $person5 = new PersonNode(5, 'Paul', 'Crowe', 'Male', 28);
-		// $person6 = new PersonNode(6, 'Michelle', 'Lane', 'Female', 24);
+		$person1 = new PersonNode(1, 'Mamadou', 'paco', 'Male', 31);
+		$person2 = new PersonNode(2, 'Felice', 'felice', 'Female', 28);
+		$person3 = new PersonNode(3, 'Jean', 'jean', 'Male', 34);
+		$person4 = new PersonNode(4, 'Michael', 'syde', 'Male', 30);
+		$person5 = new PersonNode(5, 'Paul', 'Crowe', 'Male', 28);
+		$person6 = new PersonNode(6, 'Michelle', 'Lane', 'Female', 24);
 
-		// $this->nodeStoreMock->expects($this->at(0))->method('getNode')->with(2)->will($this->returnValue($person2));
-		// $this->nodeStoreMock->expects($this->at(1))->method('getNode')->with(4)->will($this->returnValue($person4));
-		// $this->nodeStoreMock->expects($this->at(2))->method('getNode')->with(5)->will($this->returnValue($person5));
-		// $this->nodeStoreMock->expects($this->at(3))->method('getNode')->with(4)->will($this->returnValue($person4));
+		 $store = new ArrayNodeStore(); //// Any class that extends AbstractNodeStore can be placed here
+         $lnStr = new MatrixGraphLinkStrategy(); //// Any class that extends AbstractGraphLinkStrategy can be placed here
+         $friendshipGraph = new FriendshipGraph($store, $lnStr);
 
+         $friendshipGraph->addPerson($person1);
+         $friendshipGraph->addPerson($person2);
+         $friendshipGraph->addPerson($person3);
+         $friendshipGraph->addPerson($person4);
+         $friendshipGraph->addPerson($person5);
+         $friendshipGraph->addPerson($person6);
 
-		// $this->linkStrategyMock->expects($this->at(0))->method('getLinkedNodes')->with($person1)->will($this->returnValue(array(2,4,5)));
-		// $this->linkStrategyMock->expects($this->at(1))->method('getLinkedNodes')->with($person2)->will($this->returnValue(array(4)));
-		// $this->linkStrategyMock->expects($this->at(2))->method('getLinkedNodes')->with($person4)->will($this->returnValue(array(6)));
-		// $this->linkStrategyMock->expects($this->at(3))->method('getLinkedNodes')->with($person5)->will($this->returnValue(array(3,4,6)));
-		// $this->nodeStoreMock->expects($this->at(6))->method('getNode')->with(4)->will($this->returnValue($person4));
-		// $this->nodeStoreMock->expects($this->at(7))->method('getNode')->with(6)->will($this->returnValue($person6));
+         $friendshipGraph->buildFriendship($person1, $person2);
+         $friendshipGraph->buildFriendship($person1, $person3);
+         $friendshipGraph->buildFriendship($person2, $person5);
+         $friendshipGraph->buildFriendship($person3, $person4);
+         $friendshipGraph->buildFriendship($person2, $person4);
+         $friendshipGraph->buildFriendship($person2, $person1);
+         $friendshipGraph->buildFriendship($person3, $person6);
 
-		// $friendshipGraph = new FriendshipGraph($this->nodeStoreMock, $this->linkStrategyMock);
-		// $suggestedFriends = $friendshipGraph->getSuggestedFriendsOf($person1);
+		$suggestedFriends = $friendshipGraph->getSuggestedFriendsOf($person1);
+
+		$this->assertEquals(count($suggestedFriends), 1);
+		$this->assertContains($person4, $suggestedFriends);
+		$this->assertNotContains($person6, $suggestedFriends);
 	}
 
 	public function testGetPeople(){

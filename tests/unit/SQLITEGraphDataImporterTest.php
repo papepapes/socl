@@ -1,7 +1,11 @@
 <?php 
 
-require_once('SQLITEGraphDataImporter.php');
+use PAPE\SOCL\SQLITEGraphDataImporter;
 
+/**
+*	@author GUEYE MAMADOU <papepapes@gmail.com>
+*	PAPE\SOCL\SQLITEGraphDataImporter class tests	
+*/
 class SQLITEGraphDataImporterTest extends PHPUnit_Framework_TestCase{
 
 	protected $dataImporter;

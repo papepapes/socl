@@ -115,7 +115,7 @@ class MatrixGraphLinkStrategy extends AbstractGraphLinkStrategy{
 		if(isset($this->linkMatrix[$nodeId]))
 			unset($this->linkMatrix[$nodeId]);
 
-		$outLinks = $this->getOutLinkedNodes($node);
+		$outLinks = $this->getInLinkedNodes($node);
 		foreach ($outLinks as $key => $value) {
 			unset($this->linkMatrix[$value][$nodeId]);
 		}

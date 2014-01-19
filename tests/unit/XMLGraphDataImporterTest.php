@@ -1,7 +1,11 @@
 <?php 
 
-require_once('XMLGraphDataImporter.php');
+use PAPE\SOCL\XMLGraphDataImporter;
 
+/**
+*	@author GUEYE MAMADOU <papepapes@gmail.com>
+*	PAPE\SOCL\XMLGraphDataImporter class tests	
+*/
 class XMLGraphDataImporterTest extends PHPUnit_Framework_TestCase{
 
 	protected $dataImporter;
