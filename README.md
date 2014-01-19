@@ -110,10 +110,10 @@ This repo provide copies of both [PHPUnit](http://phpunit.de) and [CodeCeption](
 Be on the socl folder an run unit tests like this:
 
 ```
-php bin/phpunit.phar 
+php bin/phpunit.phar run api
 ```
 
-Launch your server and run functional/REST tests like this:
+Launch your server and run functional/REST tests like this: (by default it connects to port 9090, so if another port is used to launch the server, the file __tests/api.suite.yml__ must be correctly configured)
 
 ```
 php bin/cedecept.phar 
