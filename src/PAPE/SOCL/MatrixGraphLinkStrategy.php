@@ -7,7 +7,7 @@ use PAPE\SOCL\AbstractNode;
 
 /**
 *	@author GUEYE MAMADOU <papepapes@gmail.com>
-*	This class represents an adjacence matrix of a graph links
+*	This class represents an adjacence matrix of a graph's links
 */
 class MatrixGraphLinkStrategy extends AbstractGraphLinkStrategy{
 

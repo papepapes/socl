@@ -20,7 +20,7 @@ class JSONGraphDataImporter extends AbstractGraphDataImporter {
 	*   Constructor
 	*	@param the json file to get data from
 	*   @throws Exception When the given json file does not exist
-	*   @todo Validatation of the JSON content format
+	*   @todo Validation of the JSON content format
 	*/
 	public function __construct($jsonFile){
 		if(!file_exists($jsonFile)){
@@ -35,10 +35,7 @@ class JSONGraphDataImporter extends AbstractGraphDataImporter {
 	public function getNodes(){
 		if(!file_exists($this->jsonFile))
 			return array();
-		//var_dump(file_get_contents($this->jsonFile));
-		//var_dump(json_decode(file_get_contents($this->jsonFile)));
 		$data = json_decode(file_get_contents($this->jsonFile));
-		//die(var_dump(json_last_error()));
 		$people = array();
 		$i = 0;
 		foreach ($data as $item) {

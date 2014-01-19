@@ -11,7 +11,7 @@ class JSONGraphDataImporterTest extends \PHPUnit_Framework_TestCase {
 	protected $dataImporter;
 
 	protected function setUp(){
-		$this->dataImporter = new JSONGraphDataImporter(__DIR__.'/../../data/data.json');
+		$this->dataImporter = new JSONGraphDataImporter(__DIR__.'/../../data/original.data.json');
 	}
 
 
@@ -20,6 +20,7 @@ class JSONGraphDataImporterTest extends \PHPUnit_Framework_TestCase {
 	* @expectedExceptionMessage Failure to load an unexistant db file.
 	*/
 	public function testTryToImportUnexistantFileWillThrowAnException(){
+		$this->assertFalse(file_exists('unexistant.json'));
 		$jsonDataImporter = new JSONGraphDataImporter('unexistant.json');
 	}
 
@@ -30,7 +31,7 @@ class JSONGraphDataImporterTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(count($nodes), 20);
 
 		$this->assertEquals($nodes[13]->getSurname(), 'Daly');
-		$this->assertNotEquals($nodes[9]->getGender(), 'Female');
+		$this->assertNotEquals(strtolower($nodes[9]->getGender()), 'female');
 
 	}
 

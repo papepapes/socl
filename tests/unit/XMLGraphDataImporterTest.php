@@ -4,34 +4,34 @@ require_once('XMLGraphDataImporter.php');
 
 class XMLGraphDataImporterTest extends PHPUnit_Framework_TestCase{
 
-	protected function setUp(){
+	protected $dataImporter;
 
+	protected function setUp(){
+		$this->dataImporter = new XMLGraphDataImporter(__DIR__.'/../../data/original.data.xml');
+	}
+
+	/**
+	* @expectedException Exception 
+	* @expectedExceptionMessage Failure to load an unexistant db file.
+	*/
+	public function testTryToImportUnexistantFileWillThrowAnException(){
+		$this->assertFalse(file_exists('unexistant.xml'));
+		$jsonDataImporter = new XMLGraphDataImporter('unexistant.xml');
 	}
 
 	public function testGetNodes(){
-		$xmlDataImporter = new XMLGraphDataImporter('unexistant.xml');
-		$nodes = $xmlDataImporter->getNodes();
-		$this->assertEquals(count($nodes), 0);
-
-		$xmlDataImporter = new XMLGraphDataImporter('data.xml');
-		$nodes = $xmlDataImporter->getNodes();
+		$nodes = $this->dataImporter->getNodes();
 		$this->assertEquals(count($nodes), 20);
 
 		$this->assertEquals($nodes[13]->getSurname(), 'Daly');
-		$this->assertNotEquals($nodes[9]->getGender(), 'female');
+		$this->assertNotEquals(strtolower($nodes[9]->getGender()), 'female');
 	}
 
 	public function testGetLinks(){
-		$xmlDataImporter = new XMLGraphDataImporter('unexistant.xml');
-		$nodes = $xmlDataImporter->getLinks();
+		$links = $this->dataImporter->getLinks();
 
-		$this->assertEquals(count($nodes), 0);
-
-		$xmlDataImporter = new XMLGraphDataImporter('data.xml');
-		$nodes = $xmlDataImporter->getLinks();
-
-		$this->assertTrue(count($nodes) > 0);
-		$this->assertTrue(isset($nodes[12][7]) && $nodes[12][7] === 1);
-		$this->assertFalse(isset($nodes[18][16]));
+		$this->assertTrue(count($links) > 0);
+		$this->assertTrue(isset($links[12][7]) && $links[12][7] === 1);
+		$this->assertFalse(isset($links[18][16]));
 	}
 }

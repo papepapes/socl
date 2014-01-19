@@ -46,6 +46,7 @@ class MatrixGraphLinkStrategyTest extends PHPUnit_Framework_TestCase{
 
 		$this->linkMatrix->removeLink($this->person3, $this->person1);
 		$this->assertFalse($this->linkMatrix->hasLink($this->person3, $this->person1));
+		$this->assertTrue($this->linkMatrix->hasLink($this->person1, $this->person3));
 
 	}
 
@@ -71,14 +72,23 @@ class MatrixGraphLinkStrategyTest extends PHPUnit_Framework_TestCase{
 		$p1relatedPersons = $this->linkMatrix->getLinkedNodes($this->person1);
 
 		$this->assertEquals(count($p3relatedPersons), 2);
-		$this->assertEquals(count($p1relatedPersons), 2);
+		$this->assertEquals(count($p1relatedPersons), 1);
 
 		$this->assertEquals($p3relatedPersons[0], 1);
 		$this->assertEquals($p3relatedPersons[1], 2);
 		$this->assertEquals($p1relatedPersons[0], 4);
-		$this->assertEquals($p1relatedPersons[1], 3);
+	}
 
+	public function testRemoveLinksOf(){
+		$this->linkMatrix->buildLink($this->person3, $this->person1);
+		$this->linkMatrix->buildLink($this->person3, $this->person2);
+		$this->linkMatrix->buildLink($this->person1, $this->person4);
 
+		$this->linkMatrix->removeLinksOf($person1);
+
+		$this->assertFalse($this->linkMatrix->hasLink($this->person3, $this->person1));
+		$this->assertTrue($this->linkMatrix->hasLink($this->person3, $this->person2));
+		$this->assertFalse($this->linkMatrix->hasLink($this->person1, $this->person4));
 	}
 
 }

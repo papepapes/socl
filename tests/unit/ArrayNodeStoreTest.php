@@ -38,6 +38,8 @@ class ArrayNodeStoreTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->nodeStore->countNodes(), 1);
 		$this->assertFalse($this->nodeStore->hasNodeId(1));
 		$this->assertFalse($this->nodeStore->hasNode($this->person1));
+		$this->assertTrue($this->nodeStore->hasNodeId(2));
+		$this->assertTrue($this->nodeStore->hasNode($this->person2));
 	}
 
 	public function testUpdateNode(){
@@ -49,11 +51,10 @@ class ArrayNodeStoreTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testClearAndCount(){
+		$this->assertEquals($this->nodeStore->countNodes(), 0);
 		$this->nodeStore->storeNode($this->person1);
 		$this->nodeStore->storeNode($this->person2);
-		$this->nodeStore->storeNode($this->person3);
-		$this->nodeStore->storeNode($this->person4);
-		$this->assertEquals($this->nodeStore->countNodes(), 4);
+		$this->assertEquals($this->nodeStore->countNodes(), 2);
 		$this->nodeStore->clearNodes();
 		$this->assertEquals($this->nodeStore->countNodes(), 0);
 	}
@@ -66,7 +67,6 @@ class ArrayNodeStoreTest extends PHPUnit_Framework_TestCase {
 
 		$nodes = $this->nodeStore->getNodes();
 
-		$this->assertEquals(count($nodes), 4);
 		$this->assertContains($this->person1, $nodes);
 		$this->assertContains($this->person2, $nodes);
 		$this->assertContains($this->person3, $nodes);

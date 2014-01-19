@@ -4,35 +4,34 @@ require_once('SQLITEGraphDataImporter.php');
 
 class SQLITEGraphDataImporterTest extends PHPUnit_Framework_TestCase{
 
+	protected $dataImporter;
 
-	public function testGetNodes(){		
-
-		$sqliteDataImporter = new SQLITEGraphDataImporter('data.db');
-		$nodes = $sqliteDataImporter->getNodes();
-		$this->assertEquals(count($nodes), 20);
-
-		$this->assertEquals($nodes[13]->getSurname(), 'Daly');
-		$this->assertNotEquals($nodes[9]->getGender(), 'female');
+	protected function setUp(){
+		$this->dataImporter = new SQLITEGraphDataImporter(__DIR__.'/../../data/original.data.db');
 	}
 
 	/**
-	*	@expectedException Exception
-	*
+	* @expectedException Exception 
+	* @expectedExceptionMessage Failure to load an unexistant db file.
 	*/
 	public function testThrowsExceptionOnUnexistantDBFile(){
-		if(file_exists('unexistant.db'))
-			unlink('unexistant.db');
+		$this->assertFalse(file_exists('unexistant.db'));
 		$sqliteDataImporter = new SQLITEGraphDataImporter('unexistant.db');
+	}
+	
+	public function testGetNodes(){		
+		$nodes = $this->dataImporter->getNodes();
+		$this->assertEquals(count($nodes), 20);
+
+		$this->assertEquals($nodes[13]->getSurname(), 'Daly');
+		$this->assertNotEquals(strtolower($nodes[9]->getGender()), 'female');
 	}
 
 	public function testGetLinks(){
+		$links = $this->dataImporter->getLinks();
 
-		$sqliteDataImporter = new SQLITEGraphDataImporter('data.db');
-		$nodes = $sqliteDataImporter->getLinks();
-
-		$this->assertTrue(count($nodes) > 0);
-		$this->assertTrue(isset($nodes[12][7]) && $nodes[12][7] === 1);
-		$this->assertFalse(isset($nodes[18][16]));
-
+		$this->assertTrue(count($links) > 0);
+		$this->assertTrue(isset($links[12][7]) && $links[12][7] === 1);
+		$this->assertFalse(isset($links[18][16]));
 	}
 }

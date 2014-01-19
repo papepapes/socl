@@ -5,6 +5,8 @@
 			<file>tests/unit/ArrayNodeStoreTest.php</file>
 			<file>tests/unit/MatrixGraphLinkStrategyTest.php</file>
 			<file>tests/unit/JSONGraphDataImporterTest.php</file>
+			<file>tests/unit/SQLITEGraphDataImporterTest.php</file>
+			<file>tests/unit/XMLGraphDataImporterTest.php</file>
 			<file>tests/unit/FriendshipGraphTest.php</file>
 		</testsuite>
 	</testsuites>	

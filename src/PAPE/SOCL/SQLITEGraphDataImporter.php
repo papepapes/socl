@@ -21,7 +21,7 @@ class SQLITEGraphDataImporter extends AbstractGraphDataImporter{
 	*   Constructor
 	*	@param the sqlite db file to get data from
 	*	@throws Exception When the given sqlite db file does not exist OR WHEN there a PDO exception
-	*   @todo Validatation of the SQLITE database structure
+	*   @todo Validation of the SQLITE database structure
 	*/
 	public function __construct($dbFile){
 		if(!file_exists($dbFile)){

@@ -19,7 +19,7 @@ class XMLGraphDataImporter extends AbstractGraphDataImporter{
 	*   Constructor
 	*	@param the xml file to get data from
 	*   @throws Exception When the given xml file does not exist
-	*   @todo Validatation of the XML content format
+	*   @todo Validation of the XML content format
 	*/
 	public function __construct($xmlFile){
 		if(!file_exists($xmlFile)){
