@@ -9,6 +9,8 @@ use Silex\ControllerProviderInterface;
 use PAPE\SOCL\FriendshipGraphServiceProvider;
 use PAPE\SOCL\GraphDataSerializerServiceProvider;
 use PAPE\SOCL\JSONGraphDataImporter;
+//use PAPE\SOCL\XMLGraphDataImporter;
+//use PAPE\SOCL\SQLITEGraphDataImporter;
 use PAPE\SOCL\PersonNode;
 
 /**
@@ -23,10 +25,35 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		$app->register(new FriendshipGraphServiceProvider());
 		$app->register(new GraphDataSerializerServiceProvider());
 		
-		//import existant data in json format
-		$app['socl']->buildGraphFromData(new JSONGraphDataImporter(__DIR__.'/../../../data/data.json'));
-		//$app['socl']->buildGraphFromData(new JSONGraphDataImporter('data.json'));
-
+		
+		// ------------------  JSON DATA IMPORTER used by default --------------------------------
+		//import existant data in json format: use a local json data file if exists or use the original
+		// this allows to persist data inside a local json file and use them in next requests
+		if(!file_exists('data.json')){
+		  $app['socl']->buildGraphFromData(new JSONGraphDataImporter(__DIR__.'/../../../data/original.data.json'));
+		}else{
+		  $app['socl']->buildGraphFromData(new JSONGraphDataImporter('data.json'));
+		}
+		
+		
+		// ------------------- XML DATA Importer: Comment the above importer and Remove theses comments to use
+		/*if(!file_exists('data.xml')){
+		  $app['socl']->buildGraphFromData(new XMLGraphDataImporter(__DIR__.'/../../../data/original.data.xml'));
+		}else{
+		  $app['socl']->buildGraphFromData(new XMLGraphDataImporter('data.xml'));
+		}
+		*/
+		
+		
+		// ------------------- SQLITE DATA Importer: Comment the above importer and Remove theses comments to use
+		/*if(!file_exists('data.db')){
+		  $app['socl']->buildGraphFromData(new SQLITEGraphDataImporter(__DIR__.'/../../../data/original.data.db'));
+		}else{
+		  $app['socl']->buildGraphFromData(new SQLITEGraphDataImporter('data.db'));
+		}
+		*/
+		
+		
 		// creates a new controller based on the default route
 		$controllers = $app['controllers_factory'];
 
@@ -36,13 +63,10 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		    $response = array();
 		    $response['data'] = $people;
 		    $response = $app['gserializer']->serialize($response, 'json');
-		 //    $jsonData = $app['twig']->render('data.tpl.json.twig', array(
-			// 	'people' => $app['socl']->exportToArray(),
-			// ));
-			//$jsonData = $app['socl']->exportToArray();
-			//$jsonData = $app['gserializer']->serialize($jsonData, 'json');
-			//$jsonData = str_replace('\\', '', $jsonData);
-			//file_put_contents('data.json', $jsonData);
+			$jsonData = $app['socl']->exportToArray();
+			$jsonData = $app['gserializer']->serialize($jsonData, 'json');
+			$jsonData = str_replace('\\', '', $jsonData);
+			file_put_contents('data.json', $jsonData);
 			return $response;
 		});
 		
