@@ -21,11 +21,11 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 
 	public function connect(Application $app)
 	{
+		
 		//registers used providers
-		$app->register(new FriendshipGraphServiceProvider());
 		$app->register(new GraphDataSerializerServiceProvider());
-		
-		
+		$app->register(new FriendshipGraphServiceProvider());
+				
 		// ------------------  JSON DATA IMPORTER used by default --------------------------------
 		//import existant data in json format: use a local json data file if exists or use the original
 		// this allows to persist data inside a local json file and use them in next requests
@@ -53,10 +53,10 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		}
 		*/
 		
-		
 		// creates a new controller based on the default route
 		$controllers = $app['controllers_factory'];
-
+		
+						
 
 		$controllers->get('/api/v1/people', function(Application $app){
 		    $people = $app['socl']->getPeople();

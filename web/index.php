@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use PAPE\SOCL\SocialGraphAPIControllerProvider;
 
 
+
 $app = new Silex\Application();
 $app['debug'] = true;
 
@@ -27,14 +28,20 @@ $app->error(function(\Exception $e, $code) use($app){
 });
 
 
-/// ---------------------- CORS HEADERS SETTING ---------------
+/// --------------------- CORS HANDLER -----------------------
+$app->match('/{url}', function(){
 
-$app->after(function(Request $request, Response $response){
+	$response = new Response();
+	return $response;
+
+})->method('OPTIONS')->assert('url','.+');
+
+
+$app->after(function(Request $request, RESPONSE $response){
 	$response->headers->set('Access-Control-Allow-Origin', '*');
-	$response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-	$response->headers->set('Content-type', 'application/json');	
+	$response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 });
 
+
+
 $app->run();
-
-
