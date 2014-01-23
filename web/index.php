@@ -6,12 +6,19 @@ require_once(__DIR__.'/../vendor/autoload.php');
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use JDesrosiers\Silex\Provider\CorsServiceProvider;
 use PAPE\SOCL\SocialGraphAPIControllerProvider;
 
 
 
 $app = new Silex\Application();
 $app['debug'] = true;
+
+
+$app->register(new CorsServiceProvider());
+
+$app->after($app['cors']);
+
 
 $app->mount('/', new SocialGraphAPIControllerProvider());
 
@@ -29,6 +36,7 @@ $app->error(function(\Exception $e, $code) use($app){
 
 
 /// --------------------- CORS HANDLER -----------------------
+/*
 $app->match('/{url}', function(){
 
 	$response = new Response();
@@ -41,6 +49,7 @@ $app->after(function(Request $request, RESPONSE $response){
 	$response->headers->set('Access-Control-Allow-Origin', '*');
 	$response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 });
+*/
 
 
 
