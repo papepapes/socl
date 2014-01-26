@@ -43,6 +43,6 @@ return array(
     'Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib'),
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib'),
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib'),
-    'JDesrosiers\\' => array($vendorDir . '/cors'),
+    'JDesrosiers\\' => array($vendorDir . '/jdesrosiers'),
     'PAPE\\SOCL\\' => array($baseDir . '/src'),
 );

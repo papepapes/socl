@@ -10,18 +10,24 @@ use JDesrosiers\Silex\Provider\CorsServiceProvider;
 use PAPE\SOCL\SocialGraphAPIControllerProvider;
 
 
-
 $app = new Silex\Application();
 $app['debug'] = true;
 
-
 $app->register(new CorsServiceProvider());
 
+
+
 $app->after($app['cors']);
+$app->after(function(Request $request, Response $response){
+    $response->headers->set('Content-Type', 'application/json');
+});
 
 
 $app->mount('/', new SocialGraphAPIControllerProvider());
 
+$app->get('/docs/api', function(){
+			return file_get_contents(__DIR__.'/../docs/api/api-docs.json');
+});
 
 /// ---------------------- ERROR HANDLER ---------------------
 
@@ -33,23 +39,6 @@ $app->error(function(\Exception $e, $code) use($app){
 		    $response = str_replace('\\', '', $response);
 		    return $response;
 });
-
-
-/// --------------------- CORS HANDLER -----------------------
-/*
-$app->match('/{url}', function(){
-
-	$response = new Response();
-	return $response;
-
-})->method('OPTIONS')->assert('url','.+');
-
-
-$app->after(function(Request $request, RESPONSE $response){
-	$response->headers->set('Access-Control-Allow-Origin', '*');
-	$response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-});
-*/
 
 
 

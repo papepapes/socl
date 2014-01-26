@@ -9,9 +9,12 @@ use Silex\ControllerProviderInterface;
 use PAPE\SOCL\FriendshipGraphServiceProvider;
 use PAPE\SOCL\GraphDataSerializerServiceProvider;
 use PAPE\SOCL\JSONGraphDataImporter;
+use PAPE\SOCL\PersonNode;
+
+
 //use PAPE\SOCL\XMLGraphDataImporter;
 //use PAPE\SOCL\SQLITEGraphDataImporter;
-use PAPE\SOCL\PersonNode;
+
 
 /**
 *   @author GUEYE MAMADOU <papepapes@gmail.com>
@@ -56,7 +59,6 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		// creates a new controller based on the default route
 		$controllers = $app['controllers_factory'];
 		
-						
 
 		$controllers->get('/api/v1/people', function(Application $app){
 		    $people = $app['socl']->getPeople();
@@ -80,7 +82,9 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 
 
 		$controllers->post('/api/v1/people', function(Application $app, Request $request){
-		    $person = new PersonNode($request->get('id'), $request->get('firstname'), $request->get('surname'), $request->get('gender'), $request->get('age') );
+			$data = json_decode(str_replace('\'', '"',file_get_contents('php://input')));
+
+		    $person = new PersonNode($data->id, $data->firstname, $data->surname, $data->gender, $data->age );
 		
 		    $app['socl']->addPerson($person);
 		    $response = array();
@@ -88,15 +92,19 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		    $response = $app['gserializer']->serialize($response, 'json');
 		    $response = str_replace('\\', '', $response);
 		    return new Response($response, 200);
+
 		});
 		
 		$controllers->put('/api/v1/people/{id}', function($id, Application $app, Request $request){
-		   
-		    $person = $app['socl']->getPersonById($request->get('id'));
-		    $person->setFirstName($request->get('firstname'));
-		    $person->setSurname($request->get('surname'));
-		    $person->setGender($request->get('gender'));
-		    $person->setAge($request->get('age'));
+
+			$data = json_decode(str_replace('\'', '"',file_get_contents('php://input')));
+
+	   
+		    $person = $app['socl']->getPersonById($data->id);
+		    $person->setFirstName($data->firstname);
+		    $person->setSurname($data->surname);
+		    $person->setGender($data->gender);
+		    $person->setAge($data->age);
 		
 		    $app['socl']->updatePerson($id, $person);
 		
@@ -165,6 +173,7 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		    return $response;
 		});
 
+		
 		return $controllers;
 	}
 }

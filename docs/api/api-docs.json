@@ -1,0 +1,96 @@
+{
+	"apiVersion": "1.0",
+	"swaggerVersion": "1.2",
+	"description": "Operations on people inside social graph",
+	"basePath": "http://localhost:9090/api/v1",
+	"resourcePath": "/people",
+	"models": [{
+		"Person": {
+			"id": "person",
+			"description": "a person inside the socl social graph",
+			"required": ["id", "firstname", "surname", "age"],
+			"properties": {
+				"id": {
+					"type": "integer",
+					"description": "the ID of the person"
+				},
+				"firstname": {
+					"type": "string",
+					"description": "the person's firstname"
+				},
+				"surname": {
+					"type": "string",
+					"description": "the person's surname"
+				},
+				"gender": {
+					"type": "string",
+					"description": "the person's gender",
+					"enum": ["male", "female"]
+				},
+				"age": {
+					"type": "integer",
+					"description": "the person's age"
+				}
+			}
+		}
+	}],
+	"apis": [{
+		"path": "/people",
+		"operations": [{
+			"method": "GET",
+			"nickname": "getPeople",
+			"summary": "GET all persons inside the social graph"
+		}]
+	}, {
+		"path": "/people/{id}",
+		"operations": [{
+			"method": "GET",
+			"nickname": "getPersonById",
+			"summary": "GET a person by it's ID",
+			"parameters": [{
+				"paramType": "path",
+				"name": "id",
+				"required": true,
+				"dataType": "integer",
+				"description": "The ID of the person to lookup"
+			}]
+
+		}]
+	}, {
+		"path": "/people/{id}",
+		"operations": [{
+			"method": "PUT",
+			"nickname": "updatePersonInfo",
+			"summary": "UPDATE a given person's record inside the social graph",
+			"parameters": [{
+				"paramType": "path",
+				"name": "id",
+				"required": true,
+				"dataType": "integer",
+				"description": "The ID of the person to update"
+			}, {
+				"paramType": "body",
+				"name": "the person's updated record",
+				"required": true,
+				"dataType": "person",
+				"description": "The up-to-date record of the person"
+			}]
+
+		}]
+	}, {
+		"path": "/people",
+		"operations": [{
+			"method": "POST",
+			"nickname": "createPerson",
+			"summary": "Register a new person inside the social graph",
+			"parameters": [{
+				"paramType": "form",
+				"name": "the new person's record",
+				"required": true,
+				"dataType": "person",
+				"description": "The record of the person to register"
+			}]
+
+		}]
+	}]
+}
