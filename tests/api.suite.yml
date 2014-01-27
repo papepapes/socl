@@ -3,6 +3,6 @@ modules:
     enabled: [PhpBrowser, REST, ApiHelper]
     config:
         PhpBrowser:
-            url: http://localhost:9090
+            url: http://localhost:8080
         REST:
-            url: http://localhost:9090
+            url: http://localhost:8080

@@ -65,27 +65,33 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		    $people = $app['socl']->getPeople();
 		    $response = array();
 		    $response['status'] = "success";
-		    $response['data'] = $people;
+		    $response['data'] = count($people) === 0 ? '': $people ;
 		    $response = $app['gserializer']->serialize($response, 'json');
 			
-			return $response;
+			return new Response($response, 200);
 		});
 		
 		$controllers->get('/api/v1/people/{id}', function($id, Application $app){
 
-		    $people = $app['socl']->getPersonById($id);
+		    $person = $app['socl']->getPersonById($id);
 		    $response = array();
 		    $response['status'] = "success";
-		    $response['data'] = $people;
+		    $response['data'] = $person === null ? '': $person;
 		    $response = $app['gserializer']->serialize($response, 'json');
 
-		    return $response;
+		    return new Response($response, 200);
 		});
 
 
 		$controllers->post('/api/v1/people', function(Application $app, Request $request){
 
 			$data = $request->request;
+			if(!$data->get('id') || !$data->get('firstname') || !$data->get('surname') || !$data->get('gender') || !$data->get('age')){
+				return new Response('{"status": "error", "message": "a valid Person must have an id, a firstname, a surname, a gender and an age"}', 400);
+			}
+			if(!in_array(strtolower($data->get('gender')), array('male', 'female')) )
+				return new Response('{"status": "error", "message": "the person\'s genre must be male or female"}', 400);
+
 
 		    $person = new PersonNode($data->get('id'), $data->get('firstname'), $data->get('surname'), $data->get('gender'), $data->get('age'));
 		
@@ -106,24 +112,30 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 			$data = $request->request;
 	   
 		    $person = $app['socl']->getPersonById($id);
-
-		    if(null !== $data->get('firstname'))
-		        $person->setFirstName($data->get('firstname'));
-		    if(null !== $data->get('surname'))
-		    	$person->setSurname($data->get('surname'));
-		    if(null !== $data->get('gender'))
-		    	$person->setGender($data->get('gender'));
-		    if(null !== $data->get('age'))
-		        $person->setAge($data->get('age'));
-		
-		    $app['socl']->updatePerson($id, $person);
-		
 		    $response = array();
+
+		    if(null !== $person){
+		    	if(null !== $data->get('firstname'))
+		    	    $person->setFirstName($data->get('firstname'));
+		    	if(null !== $data->get('surname'))
+		    		$person->setSurname($data->get('surname'));
+		    	if(null !== $data->get('gender'))
+		    		$person->setGender($data->get('gender'));
+		    	if(null !== $data->get('age'))
+		    	    $person->setAge($data->get('age'));
+			
+			    	$app['socl']->updatePerson($id, $person);	
+			    	$response['data'] = $person;
+		    	$this->persistChanges($app);
+		    }
+		    
+		
+		   
 		    $response['status'] = "success";
-		    $response['data'] = $person;
+		   
 		    $response = $app['gserializer']->serialize($response, 'json');
 
-		    $this->persistChanges($app);
+		    
 
 		    return new Response($response, 200);
 		   
@@ -131,13 +143,15 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 
 		$controllers->delete('/api/v1/people/{id}', function($id, Application $app){
 		    $person = $app['socl']->getPersonById($id);
-		    $app['socl']->removePerson($person);
+		    if(null !== $person){
+		    	$app['socl']->removePerson($person);
+		    	$this->persistChanges($app);
+		    }
 		   
 		    $response = array();
 		    $response['status'] = "success";
 		    $response = $app['gserializer']->serialize($response, 'json');
 
-		    $this->persistChanges($app);
 
 		    return new Response($response, 200);
 		});
@@ -145,24 +159,29 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		
 		$controllers->get('/api/v1/people/{id}/friends', function($id, Application $app){
 		    $person = $app['socl']->getPersonById($id);
-		    $friends = $app['socl']->getFriendsOf($person);
-		
 		    $response = array();
+		    if(null !== $person){
+		    	$friends = $app['socl']->getFriendsOf($person);
+		    	$response['data'] = $friends;
+		    }		
+		    
 		    $response['status'] = "success";
-		    $response['data'] = $friends;
+		   
 		    $response = $app['gserializer']->serialize($response, 'json');
-
 		    return new Response($response, 200);
 		
 		});
 		
 		$controllers->get('/api/v1/people/{id}/friends/friends', function($id, Application $app){
 		    $person = $app['socl']->getPersonById($id);
-		    $friends = $app['socl']->getFriendsOfriendsOf($person);
+		    $response = array();
+		    if(null !== $person){
+		    	$friends = $app['socl']->getFriendsOfriendsOf($person);
+		    	$response['data'] = $friends;
+		    }
 		
 		    $response = array();
 		    $response['status'] = "success";
-		    $response['data'] = $friends;
 		    $response = $app['gserializer']->serialize($response, 'json');
 
 
@@ -171,40 +190,52 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 
 		$controllers->post('/api/v1/people/{pid}/friends/{fid}', function($pid, $fid, Application $app){
 		    $person = $app['socl']->getPersonById($pid);
-		    $friend = $app['socl']->getPersonById($fid);
-		    $app['socl']->buildFriendship($person, $friend);
-		
 		    $response = array();
+			if(null !== $person){
+		    	$friend = $app['socl']->getPersonById($fid);
+		    	$app['socl']->buildFriendship($person, $friend);
+		    	$response['data'] = array($person, $friend);
+		    	$this->persistChanges($app);
+				
+			}
+
+		
 		    $response['status'] = "success";
-		    $response['data'] = array($person, $friend);
 		    $response = $app['gserializer']->serialize($response, 'json');
 
-		    $this->persistChanges($app);
 
 		    return new Response($response, 200);
 		});
 		
 		$controllers->delete('/api/v1/people/{pid}/friends/{fid}', function($pid, $fid, Application $app){
 		    $person = $app['socl']->getPersonById($pid);
-		    $friend = $app['socl']->getPersonById($fid);
-		
-		    $app['socl']->removeFriendship($person, $friend);
-
 		    $response = array();
-		    $response['status'] = "success";
+		    if(null !== $person){
+		    	$friend = $app['socl']->getPersonById($fid);
+		    	$app['socl']->removeFriendship($person, $friend);
+		    	$this->persistChanges($app);
+		    	
+		    }
+		
 
-		    $this->persistChanges($app);
+		    $response['status'] = "success";
+		    $response = $app['gserializer']->serialize($response, 'json');
+
 
 		    return new Response($response, 200);
 		});
 
 		$controllers->get('/api/v1/people/{pid}/friends/suggested', function($pid, Application $app){
 		    $person = $app['socl']->getPersonById($pid);
-			$suggestedFriends = $app['socl']->getSuggestedFriendsOf($person);
-
 		    $response = array();
+
+		    if(null !== $person){
+				$suggestedFriends = $app['socl']->getSuggestedFriendsOf($person);
+		    	$response['data'] = $suggestedFriends;		    	
+		    }
+
+		    
 		    $response['status'] = "success";
-		    $response['data'] = $suggestedFriends;
 		    $response = $app['gserializer']->serialize($response, 'json');
 
 		    return new Response($response, 200);
