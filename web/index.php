@@ -16,6 +16,12 @@ $app['debug'] = true;
 $app->register(new CorsServiceProvider());
 
 
+$app->before(function(Request $request){
+	if(0 === strpos($request->headers->get('Content-Type'), 'application/json')){
+		$data = json_decode($request->getContent(), true);
+		$request->request->replace(is_array($data) ? $data: array());
+	}
+});
 
 $app->after($app['cors']);
 $app->after(function(Request $request, Response $response){
@@ -34,7 +40,8 @@ $app->get('/docs/api', function(){
 $app->error(function(\Exception $e, $code) use($app){
 
 			$response = array();
-		    $response['data'] = array('error_message' => $e->getMessage(), 'error_code' => $code);
+			$response['status'] = "error";
+		    $response['data'] = array("message" => $e->getMessage());
 		    $response = $app['gserializer']->serialize($response, 'json');
 		    $response = str_replace('\\', '', $response);
 		    return $response;

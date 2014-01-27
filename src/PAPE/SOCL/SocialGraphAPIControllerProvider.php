@@ -61,56 +61,70 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		
 
 		$controllers->get('/api/v1/people', function(Application $app){
+
 		    $people = $app['socl']->getPeople();
 		    $response = array();
+		    $response['status'] = "success";
 		    $response['data'] = $people;
 		    $response = $app['gserializer']->serialize($response, 'json');
-			$jsonData = $app['socl']->exportToArray();
-			$jsonData = $app['gserializer']->serialize($jsonData, 'json');
-			file_put_contents('data.json', $jsonData);
+			
 			return $response;
 		});
 		
 		$controllers->get('/api/v1/people/{id}', function($id, Application $app){
+
 		    $people = $app['socl']->getPersonById($id);
 		    $response = array();
+		    $response['status'] = "success";
 		    $response['data'] = $people;
 		    $response = $app['gserializer']->serialize($response, 'json');
+
 		    return $response;
 		});
 
 
 		$controllers->post('/api/v1/people', function(Application $app, Request $request){
-			$data = json_decode(str_replace('\'', '"',file_get_contents('php://input')));
 
-		    $person = new PersonNode($data->id, $data->firstname, $data->surname, $data->gender, $data->age );
+			$data = $request->request;
+
+		    $person = new PersonNode($data->get('id'), $data->get('firstname'), $data->get('surname'), $data->get('gender'), $data->get('age'));
 		
 		    $app['socl']->addPerson($person);
 		    $response = array();
-		    $response['data'] = array('Location' => '/api/v1/people/'.$person->getId());
+		    $response['status'] = "success";
+		    $response['data'] = $person;
 		    $response = $app['gserializer']->serialize($response, 'json');
-		    $response = str_replace('\\', '', $response);
+
+		    $this->persistChanges($app);
+
 		    return new Response($response, 200);
 
 		});
 		
 		$controllers->put('/api/v1/people/{id}', function($id, Application $app, Request $request){
 
-			$data = json_decode(str_replace('\'', '"',file_get_contents('php://input')));
-
+			$data = $request->request;
 	   
-		    $person = $app['socl']->getPersonById($data->id);
-		    $person->setFirstName($data->firstname);
-		    $person->setSurname($data->surname);
-		    $person->setGender($data->gender);
-		    $person->setAge($data->age);
+		    $person = $app['socl']->getPersonById($id);
+
+		    if(null !== $data->get('firstname'))
+		        $person->setFirstName($data->get('firstname'));
+		    if(null !== $data->get('surname'))
+		    	$person->setSurname($data->get('surname'));
+		    if(null !== $data->get('gender'))
+		    	$person->setGender($data->get('gender'));
+		    if(null !== $data->get('age'))
+		        $person->setAge($data->get('age'));
 		
 		    $app['socl']->updatePerson($id, $person);
 		
 		    $response = array();
-		    $response['data'] = array('Location' => '/api/v1/people/'.$person->getId());
+		    $response['status'] = "success";
+		    $response['data'] = $person;
 		    $response = $app['gserializer']->serialize($response, 'json');
-		    $response = str_replace('\\', '', $response);
+
+		    $this->persistChanges($app);
+
 		    return new Response($response, 200);
 		   
 		});
@@ -118,7 +132,14 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		$controllers->delete('/api/v1/people/{id}', function($id, Application $app){
 		    $person = $app['socl']->getPersonById($id);
 		    $app['socl']->removePerson($person);
-		    return new Response('', 204);
+		   
+		    $response = array();
+		    $response['status'] = "success";
+		    $response = $app['gserializer']->serialize($response, 'json');
+
+		    $this->persistChanges($app);
+
+		    return new Response($response, 200);
 		});
 		
 		
@@ -127,9 +148,11 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		    $friends = $app['socl']->getFriendsOf($person);
 		
 		    $response = array();
+		    $response['status'] = "success";
 		    $response['data'] = $friends;
 		    $response = $app['gserializer']->serialize($response, 'json');
-		    return $response;
+
+		    return new Response($response, 200);
 		
 		});
 		
@@ -138,9 +161,12 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		    $friends = $app['socl']->getFriendsOfriendsOf($person);
 		
 		    $response = array();
+		    $response['status'] = "success";
 		    $response['data'] = $friends;
 		    $response = $app['gserializer']->serialize($response, 'json');
-		    return $response;
+
+
+		    return new Response($response, 200);
 		});
 
 		$controllers->post('/api/v1/people/{pid}/friends/{fid}', function($pid, $fid, Application $app){
@@ -149,9 +175,12 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		    $app['socl']->buildFriendship($person, $friend);
 		
 		    $response = array();
-		    $response['data'] = array('Location' => '/api/v1/people/'.$person->getId().'/friends');
+		    $response['status'] = "success";
+		    $response['data'] = array($person, $friend);
 		    $response = $app['gserializer']->serialize($response, 'json');
-		    $response = str_replace('\\', '', $response);
+
+		    $this->persistChanges($app);
+
 		    return new Response($response, 200);
 		});
 		
@@ -160,19 +189,36 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		    $friend = $app['socl']->getPersonById($fid);
 		
 		    $app['socl']->removeFriendship($person, $friend);
-		    return new Response('', 204);
+
+		    $response = array();
+		    $response['status'] = "success";
+
+		    $this->persistChanges($app);
+
+		    return new Response($response, 200);
 		});
 
 		$controllers->get('/api/v1/people/{pid}/friends/suggested', function($pid, Application $app){
 		    $person = $app['socl']->getPersonById($pid);
 			$suggestedFriends = $app['socl']->getSuggestedFriendsOf($person);
+
 		    $response = array();
+		    $response['status'] = "success";
 		    $response['data'] = $suggestedFriends;
 		    $response = $app['gserializer']->serialize($response, 'json');
-		    return $response;
+
+		    return new Response($response, 200);
 		});
 
 		
 		return $controllers;
+	}
+
+
+	private function persistChanges(Application $app){
+
+		$jsonData = $app['socl']->exportToArray();
+		$jsonData = $app['gserializer']->serialize($jsonData, 'json');
+		file_put_contents('data.json', $jsonData);
 	}
 }
