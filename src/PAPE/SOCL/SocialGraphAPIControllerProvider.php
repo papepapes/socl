@@ -92,7 +92,12 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 			if(!in_array(strtolower($data->get('gender')), array('male', 'female')) )
 				return new Response('{"status": "error", "message": "the person\'s genre must be male or female"}', 400);
 
+			$person = $app['socl']->getPersonById($data->get('id'));
+			if(null !== $person){
+				return new Response('{"status": "error", "message": "the person\'s id already exists."}', 400);
+			}
 
+			
 		    $person = new PersonNode($data->get('id'), $data->get('firstname'), $data->get('surname'), $data->get('gender'), $data->get('age'));
 		
 		    $app['socl']->addPerson($person);
