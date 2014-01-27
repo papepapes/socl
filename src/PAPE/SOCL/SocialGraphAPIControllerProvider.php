@@ -67,7 +67,6 @@ class SocialGraphAPIControllerProvider implements ControllerProviderInterface {
 		    $response = $app['gserializer']->serialize($response, 'json');
 			$jsonData = $app['socl']->exportToArray();
 			$jsonData = $app['gserializer']->serialize($jsonData, 'json');
-			$jsonData = str_replace('\\', '', $jsonData);
 			file_put_contents('data.json', $jsonData);
 			return $response;
 		});
